@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  thumbor1:
+    image: apsl/thumbor
+    volumes:
+      - thumbor_cache:/data
+    environment:
+      - THUMBOR_PORT=8888
+      - SECURITY_KEY=george
+      - AUTO_WEBP=True
+      - ALLOW_UNSAFE_URL=False
+    # Add other Thumbor configurations as environment variables
+
+  thumbor2:
+    image: apsl/thumbor
+    volumes:
+      - thumbor_cache:/data
+    environment:
+      - THUMBOR_PORT=8888
+      - SECURITY_KEY=george
+      - AUTO_WEBP=True
+      - ALLOW_UNSAFE_URL=False
+    # Add other Thumbor configurations as environment variables
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - thumbor1
+      - thumbor2
+
+volumes:
+  thumbor_cache:
