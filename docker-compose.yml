@@ -2,36 +2,43 @@ version: '3'
 
 services:
   thumbor1:
-    image: apsl/thumbor
+    image: ghcr.io/minimalcompact/thumbor:latest
     volumes:
       - thumbor_cache:/data
     environment:
       - THUMBOR_PORT=8888
       - SECURITY_KEY=george
+      - MAX_AGE=15724800  # 182 days
       - AUTO_WEBP=True
+      - QUALITY=80
+      # - AUTO_AVIF=True
       - ALLOW_UNSAFE_URL=False
-    # Add other Thumbor configurations as environment variables
+    restart: always
 
   thumbor2:
-    image: apsl/thumbor
+    image: ghcr.io/minimalcompact/thumbor:latest
     volumes:
       - thumbor_cache:/data
     environment:
       - THUMBOR_PORT=8888
       - SECURITY_KEY=george
+      - MAX_AGE=15724800  # 182 days
       - AUTO_WEBP=True
+      - QUALITY=80
+      # - AUTO_AVIF=True
       - ALLOW_UNSAFE_URL=False
-    # Add other Thumbor configurations as environment variables
+    restart: always
 
   nginx:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "888:80"
     depends_on:
       - thumbor1
       - thumbor2
+    restart: always
 
 volumes:
   thumbor_cache:
